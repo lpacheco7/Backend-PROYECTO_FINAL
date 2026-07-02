@@ -26,12 +26,19 @@ class UsuarioPartidoRepository {
             usuarioPartido_id,
             update_data,
             { returnDocument: 'after' }
-        ); 
+        );
     }
 
     async deleteById(usuarioPartido_id) {
         return await UsuarioPartido.findByIdAndDelete(usuarioPartido_id);
     }
+
+    async deleteMember(partidoId, userId) {
+        return await UsuarioPartido.findOneAndDelete({
+            fk_partido_id: partidoId,
+            fk_user_id: userId
+        })
+    };
 
     async getByPartidoId(partido_id) {
         const result = await UsuarioPartido

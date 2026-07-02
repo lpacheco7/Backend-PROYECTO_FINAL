@@ -20,7 +20,7 @@ partidoRouter.post(
 
 partidoRouter.get(
     '/getallbyuser',
-    partidoController.getAllByUser
+    usuarioPartidoController.getPartidosByUser
 );
 
 partidoRouter.delete(
@@ -36,6 +36,11 @@ partidoRouter.put(
 partidoRouter.post(
     '/:partido_id/members',
     usuarioPartidoController.inviteUser
+);
+
+partidoRouter.delete(
+    "/members/:partido_id/remove",
+    usuarioPartidoController.removeMember
 );
 
 export default partidoRouter

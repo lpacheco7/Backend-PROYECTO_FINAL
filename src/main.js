@@ -17,7 +17,12 @@ connectMongoDB()
 const app = express();
 const PORT = ENVIRONMENT.PORT;
 
-app.use(cors());
+app.use(
+    cors({
+        origin: ENVIRONMENT.URL_FRONTEND,
+        credentials: true
+    })
+);
 
 app.use(express.json());
 

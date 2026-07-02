@@ -1,4 +1,5 @@
 import partidoRepository from "../repositories/partido.repository.js";
+import usuarioPartidoRepository from "../repositories/usuarioPartido.repository.js";
 import usurioPartidoService from "../services/usuarioPartido.service.js";
 
 class PartidoController {
@@ -6,7 +7,22 @@ class PartidoController {
     async create(req, res) {
         const { ubicacion, maxJugadores, fecha_hora } = req.body;
         const user_id = req.user.id;
-        //SERVICCES condiciones para crear cuenta
+
+        if (!ubicacion || !maxJugadores || !fecha_hora) {
+            return res.status(400).json({
+                ok: false,
+                message: "Faltan datos",
+                status: 400
+            });
+        }
+
+        if (maxJugadores < 2) {
+            return res.status(400).json({
+                ok: false,
+                message: "El partido debe tener al menos 2 jugadores",
+                status: 400
+            });
+        }
 
         const newPartido = await partidoRepository.create(user_id, ubicacion, maxJugadores, fecha_hora);
 
@@ -58,7 +74,7 @@ class PartidoController {
         }
 
         await partidoRepository.deleteById(partido_id);
-        
+
 
         return res.status(200).json({
             message: "Partido eliminado exitosamente",

@@ -7,7 +7,7 @@ class PartidoRepository {
     }
 
     async getById(partido_id) {
-        return await Partido.findById(partido_id).populate('fk_user_id', 'nombre email');
+        return await Partido.findById(partido_id);
     }
 
     async deleteById(partido_id) {

@@ -19,7 +19,7 @@ const partidoSchema = new mongoose.Schema(
         },
 
         fecha_hora: {
-            type: Date, //2026-06-20 14:00:00
+            type: Date,
             default: Date.now,
             required: true
         },

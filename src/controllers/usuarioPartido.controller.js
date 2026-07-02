@@ -1,9 +1,9 @@
 import ServerError from "../helpers/serverError.helper.js";
+import usuarioPartidoRepository from "../repositories/usuarioPartido.repository.js";
 import usuarioPartidoService from "../services/usuarioPartido.service.js";
 
 class UsuarioPartidoController {
 
-    // El creador del partido invita a un usuario por email
     async inviteUser(request, response) {
         const { partido_id } = request.params;
         const { invited_email } = request.body;
@@ -21,10 +21,9 @@ class UsuarioPartidoController {
         });
     }
 
-    // El invitado acepta o rechaza la invitación via token en el link del email
     async processInvitation(request, response) {
-        const { decision } = request.params;           // 'Aceptado' o 'Rechazado'
-        const { invitation_token } = request.query;    // ?invitation_token=...
+        const { decision } = request.params;         
+        const { invitation_token } = request.query;
 
         if (!invitation_token) {
             throw new ServerError("Falta el token de invitación", 400);
@@ -43,7 +42,6 @@ class UsuarioPartidoController {
         });
     }
 
-    // Lista todos los jugadores de un partido
     async getJugadoresByPartido(request, response) {
         const { partido_id } = request.params;
 
@@ -56,11 +54,9 @@ class UsuarioPartidoController {
         });
     }
 
-    // Lista todos los partidos a los que pertenece el usuario logueado
     async getPartidosByUser(request, response) {
-        const { id: user_id } = request.user;
-
-        const partidos = await usuarioPartidoService.getPartidosByUser(user_id);
+        const user_id = request.user.id;
+        const partidos = await usuarioPartidoRepository.getByUserId(user_id);
 
         return response.status(200).json({
             ok: true,
@@ -69,12 +65,26 @@ class UsuarioPartidoController {
         });
     }
 
-    // El creador elimina a un jugador del partido
     async removeJugador(request, response) {
         const { partido_id, user_id } = request.params;
         const { id: creador_id } = request.user;
 
         await usuarioPartidoService.removeJugador(creador_id, partido_id, user_id);
+
+        return response.status(200).json({
+            ok: true,
+            message: "Jugador eliminado del partido"
+        });
+    }
+
+    async removeMember(request, response) {
+        const { partido_id } = request.params;
+        const { id: userId } = request.user;
+
+        await usuarioPartidoService.removeMember(
+            partido_id,
+            userId
+        );
 
         return response.status(200).json({
             ok: true,

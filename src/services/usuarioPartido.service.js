@@ -4,12 +4,13 @@ import userRepository from "../repositories/user.repository.js";
 import usuarioPartidoRepository from "../repositories/usuarioPartido.repository.js";
 import jwt from 'jsonwebtoken'
 import mailService from "./mail.service.js";
+import partidoRepository from "../repositories/partido.repository.js";
 
 class UsuarioPartidoService {
     async inviteUser(user_invited_for_id, user_invited_email, partido_id,) {
         const partidoInvitado = partido_id;
-        console.log(partidoInvitado);
         const userToInvite = await userRepository.getByEmail(user_invited_email);
+        const partido = await partidoRepository.getById(partidoInvitado);
 
         if (!userToInvite) {
             throw new ServerError("El usuario ingresado no existe en el sistema", 404);
@@ -29,10 +30,10 @@ class UsuarioPartidoService {
             ENVIRONMENT.JWT_SECRET,
         );
 
-        const accept_url = `${ENVIRONMENT.URL_FRONTEND}/api/partido/${partido_id}/members/aceptado?invitation_token=${invitation_token}`;
-        const reject_url = `${ENVIRONMENT.URL_FRONTEND}/api/partido/${partido_id}/members/rechazado?invitation_token=${invitation_token}`;
+        const accept_url = `${ENVIRONMENT.URL_BACKEND}/api/partido/${partido_id}/members/aceptado?invitation_token=${invitation_token}`;
+        const reject_url = `${ENVIRONMENT.URL_BACKEND}/api/partido/${partido_id}/members/rechazado?invitation_token=${invitation_token}`;
 
-        await mailService.sendInvitationMemberEmail(userToInvite.email, accept_url, reject_url)
+        await mailService.sendInvitationMemberEmail(userToInvite.email, accept_url, reject_url, partido)
     }
 
     async memberDesicion(invitation_token, decision) {
@@ -89,6 +90,19 @@ class UsuarioPartidoService {
             aceptado
         );
         return new_member
+    }
+
+    async removeMember(partidoId, userId) {
+        const miembro = await usuarioPartidoRepository.deleteMember(
+            partidoId,
+            userId
+        );
+
+        if (!miembro) {
+            throw new ServerError("El usuario no pertenece al partido", 404);
+        }
+
+        return miembro;
     }
 
 }

@@ -10,7 +10,6 @@ class AuthController {
 
         const { name, email, password } = req.body;
 
-        // Validaciones
         if (!name || name.length <= 2) {
             throw new ServerError("Nombre debe ser mayor a 2 caracteres", 400)
         }
@@ -42,17 +41,18 @@ class AuthController {
         await mailer_transport.sendMail(
             {
                 to: email,
-                from: ENVIRONMENT.GMAIL_USERNAME,
+                from: `"Amistosos" <${ENVIRONMENT.GMAIL_USERNAME}>`,
                 subject: "Verifica tu mail",
                 html: `
-                        <h1>Bienvenido ${name}</h1>
+                        <h3>Bienvenido ${name} a AMISTOSOS</h3>
+                        <p>Aca vas a poder crear partidos e invitar a tus amigos</p>
                         <a href='${ENVIRONMENT.URL_BACKEND}/api/auth/verify-email?verification_token=${verification_token}'>Click aqui</a> para verificar tu cuenta
                     `
             }
         )
 
         return res.status(201).json({
-            message: "Usuario registrado con éxito",
+            message: "Usuario registrado con éxito, Ahora verifiquese con el correo que le enviamos",
             ok: true,
             status: 201,
             data: {
@@ -68,7 +68,7 @@ class AuthController {
 
     async verifyEmail(req, res) {
         const { verification_token } = req.query;
-
+        
         if (!verification_token) {
             throw new ServerError("Falta token de verificación", 400);
         }
@@ -137,6 +137,7 @@ class AuthController {
             status: 200,
             message: 'Usuario autentificado exitosamente',
             data: {
+                user_found,
                 access_token
             }
         })
