@@ -17,12 +17,7 @@ connectMongoDB()
 const app = express();
 const PORT = ENVIRONMENT.PORT;
 
-app.use(
-    cors({
-        origin: ENVIRONMENT.URL_FRONTEND,
-        credentials: true
-    })
-);
+app.use(cors());
 
 app.use(express.json());
 
@@ -47,6 +42,4 @@ app.get(
 
 app.use(errorHandlerMiddleware);
 
-app.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
-});
+export default app
