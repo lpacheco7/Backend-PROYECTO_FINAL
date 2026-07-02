@@ -17,6 +17,8 @@ connectMongoDB()
 const app = express();
 const PORT = ENVIRONMENT.PORT;
 
+
+console.log("URL_FRONTEND =", ENVIRONMENT.URL_FRONTEND);
 app.use(
     cors({
         origin: ENVIRONMENT.URL_FRONTEND,
