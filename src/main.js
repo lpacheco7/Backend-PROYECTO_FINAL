@@ -19,7 +19,7 @@ const PORT = ENVIRONMENT.PORT;
 
 console.log("URL_FRONTEND:", ENVIRONMENT.URL_FRONTEND);
 app.use(cors({
-    origin: "https://frontend-proyecto-final-two.vercel.app" //cuando uso ENNVIRONMENT.URL_FRONTEND 
+    origin: "https://frontend-proyecto-final-two.vercel.app" // error cuando uso ENNVIRONMENT.URL_FRONTEND 
 }));
 
 app.use(express.json());
