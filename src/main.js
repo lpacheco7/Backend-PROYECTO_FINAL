@@ -17,7 +17,9 @@ connectMongoDB()
 const app = express();
 const PORT = ENVIRONMENT.PORT;
 
-app.use(cors());
+app.use(cors({
+    origin: "https://frontend-proyecto-final-two.vercel.app/"
+}));
 
 app.use(express.json());
 
